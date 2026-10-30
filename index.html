@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATLAS 1.0</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #080d0b;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 22px;
+  border-bottom: 1px solid #183b2a;
+  color: #38e88b;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+main {
+  padding: 24px 18px;
+  text-align: center;
+}
+
+.orb {
+  width: 145px;
+  height: 145px;
+  margin: 45px auto 25px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #46ff9c, #087b46 55%, #06140c);
+  box-shadow: 0 0 45px #16d87866;
+}
+
+h2 { color: #45ef91; }
+p { color: #a8b9af; }
+
+.status {
+  margin: 25px auto;
+  color: #45ef91;
+}
+
+.chat {
+  display: flex;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #24563b;
+  background: #111b15;
+  color: white;
+}
+
+button {
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  background: #19c76a;
+  color: #06130b;
+  font-weight: bold;
+}
+
+.voice {
+  margin-top: 15px;
+  width: 100%;
+  padding: 16px;
+}
+
+#answer {
+  margin-top: 25px;
+  text-align: left;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+</style>
+</head>
+
+<body>
+
+<header>◈ ATLAS 1.0</header>
+
+<main>
+
+<div class="orb"></div>
+
+<h2>Dein persönlicher Assistent</h2>
+<p>Intelligent. Zuverlässig. An deiner Seite.</p>
+
+<div class="status" id="status">● ATLAS ist bereit</div>
+
+<div class="chat">
+  <input id="message" placeholder="Schreib ATLAS etwas...">
+  <button onclick="sendMessage()">Senden</button>
+</div>
+
+<button class="voice" onclick="startVoice()">
+  🎙️ Mit ATLAS sprechen
+</button>
+
+<div id="answer"></div>
+
+</main>
+
+<script>
+function sendMessage() {
+  const input = document.getElementById("message");
+  const answer = document.getElementById("answer");
+
+  if (!input.value.trim()) return;
+
+  const message = input.value.trim();
+
+  answer.textContent =
+    "Du: " + message +
+    "\nATLAS: Ich habe deine Nachricht erhalten. Meine echte KI-Verbindung wird später eingerichtet.";
+
+  input.value = "";
+}
+
+function startVoice() {
+  const status = document.getElementById("status");
+  const Recognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!Recognition) {
+    status.textContent =
+      "Spracherkennung wird von diesem Browser nicht unterstützt.";
+    return;
+  }
+
+  const recognition = new Recognition();
+  recognition.lang = "de-DE";
+  recognition.interimResults = false;
+
+  status.textContent = "● ATLAS hört zu...";
+
+  recognition.onresult = function(event) {
+    const text = event.results[0][0].transcript;
+
+    document.getElementById("message").value = text;
+    status.textContent = "● Sprache erkannt";
+
+    sendMessage();
+  };
+
+  recognition.onerror = function() {
+    status.textContent = "● Sprachfehler – bitte erneut versuchen";
+  };
+
+  recognition.onend = function() {
+    if (status.textContent === "● ATLAS hört zu...") {
+      status.textContent = "● ATLAS ist bereit";
+    }
+  };
+
+  recognition.start();
+}
+</script>
+
+</body>
+</html>
