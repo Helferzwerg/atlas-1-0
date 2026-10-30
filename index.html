@@ -122,13 +122,39 @@ function sendMessage() {
   const message = input.value.trim();
 
   answer.textContent =
-    "Du: " + message +
-    "\nATLAS: Ich bin ATLAS! Deine Nachricht ist angekommen. Meine kostenlose Demo funktioniert. Wie kann ich dir helfen?";
-
+  "Du: " + message +
+  "\nATLAS: Hallo " + atlasMemory.name +
+  "! Ich bin ATLAS. Schön, dass du da bist. Wie kann ich dir helfen?";
   input.value = "";
 }
 
-function startVoice() {
+// ATLAS Gedächtnis
+const ATLAS_MEMORY_KEY = "atlas_memory";
+
+function getAtlasMemory() {
+  try {
+    return JSON.parse(
+      localStorage.getItem(ATLAS_MEMORY_KEY)
+    ) || {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function saveAtlasMemory(memory) {
+  localStorage.setItem(
+    ATLAS_MEMORY_KEY,
+    JSON.stringify(memory)
+  );
+}
+
+const atlasMemory = getAtlasMemory();
+
+if (!atlasMemory.name) {
+  atlasMemory.name = "Jan";
+  saveAtlasMemory(atlasMemory);
+    }
+  function startVoice() {
   const status = document.getElementById("status");
   const Recognition =
     window.SpeechRecognition ||
@@ -170,5 +196,4 @@ function startVoice() {
 </script>
 
 </body>
-</html>
 </html>
